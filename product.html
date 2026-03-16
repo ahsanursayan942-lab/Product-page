@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechProduct | Smart Headphones</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== GLOBAL ===== */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#f4f7fb;color:#333;line-height:1.6;}
+.container{max-width:1200px;width:90%;margin:auto;}
+section{padding:90px 0;}
+h1,h2,h3{font-weight:700;}
+img{width:100%;border-radius:12px;display:block;}
+
+/* ===== HEADER ===== */
+header{background:#0f172a;position:sticky;top:0;z-index:1000;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:20px 0;position:relative;}
+.logo{font-size:24px;font-weight:700;color:#38bdf8;}
+nav{display:flex;align-items:center;}
+nav a{color:white;text-decoration:none;margin-left:25px;position:relative;}
+nav a::after{content:"";position:absolute;height:2px;width:0;background:#38bdf8;left:0;bottom:-5px;transition:.3s;}
+nav a:hover::after{width:100%;}
+
+/* ===== HAMBURGER MENU ===== */
+#menu-toggle{display:none;}
+.menu-icon{display:none;cursor:pointer;font-size:28px;color:white;user-select:none;}
+nav{transition:0.3s;}
+#menu-toggle:checked + .menu-icon + nav{display:flex;flex-direction:column;position:absolute;top:70px;left:0;width:100%;background:#0f172a;text-align:center;}
+#menu-toggle:checked + .menu-icon + nav a{margin:15px 0;}
+
+/* ===== BUTTON ===== */
+.btn{display:inline-block;padding:14px 28px;border-radius:30px;background:linear-gradient(135deg,#06b6d4,#3b82f6);color:white;text-decoration:none;font-weight:600;box-shadow:0 10px 20px rgba(0,0,0,0.15);transition:.3s;}
+.btn:hover{transform:translateY(-3px);}
+
+/* ===== HERO ===== */
+.hero{background:linear-gradient(135deg,#e0f2fe,#ffffff);}
+.hero-layout{display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;}
+.hero-text{max-width:520px;}
+.hero-text h1{font-size:46px;margin-bottom:20px;}
+.hero-text p{margin-bottom:30px;color:#555;}
+.hero-img{max-width:420px;}
+
+/* ===== FEATURES ===== */
+.features{background:white;text-align:center;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;margin-top:50px;}
+.feature{background:#f8fafc;padding:30px;border-radius:12px;border-top:4px solid #38bdf8;box-shadow:0 10px 20px rgba(0,0,0,0.05);transition:.3s;}
+.feature:hover{transform:translateY(-8px);}
+.feature-icon{font-size:34px;margin-bottom:10px;}
+
+/* ===== PRODUCT ===== */
+.product-layout{display:flex;align-items:center;gap:60px;flex-wrap:wrap;justify-content:center;position:relative;}
+.product-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:420px;position:relative;}
+.product-gallery img{box-shadow:0 20px 40px rgba(0,0,0,0.2);transition:.4s;transform:translateY(0);border-radius:16px;}
+.product-gallery img:nth-child(1){z-index:4;transform:translate(-20px,-20px);}
+.product-gallery img:nth-child(2){z-index:3;transform:translate(20px,-10px);}
+.product-gallery img:nth-child(3){z-index:2;transform:translate(-15px,10px);}
+.product-gallery img:nth-child(4){z-index:1;transform:translate(15px,20px);}
+.product-gallery img:hover{transform:scale(1.05) translateY(-5px);}
+.product-text{max-width:450px;text-align:center;}
+.product-text h2{font-size:36px;margin-bottom:20px;}
+.product-text p{margin-bottom:20px;color:#555;}
+
+/* ===== TESTIMONIALS ===== */
+.testimonials{background:#f1f5f9;text-align:center;}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;margin-top:40px;}
+.review{background:white;padding:30px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.05);}
+
+/* ===== PRICING ===== */
+.pricing{background:white;text-align:center;}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;margin-top:40px;}
+.price-card{background:#f8fafc;padding:40px;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,0.05);}
+.price{font-size:32px;margin:15px 0;color:#06b6d4;}
+
+/* ===== FAQ ===== */
+.faq{background:#f1f5f9;}
+.faq-box{max-width:800px;margin:auto;}
+details{background:white;padding:15px;border-radius:8px;margin-bottom:15px;cursor:pointer;}
+
+/* ===== CTA ===== */
+.cta{background:linear-gradient(135deg,#06b6d4,#3b82f6);color:white;text-align:center;padding:60px 0;}
+
+/* ===== FOOTER ===== */
+footer{background:#0f172a;color:#aaa;text-align:center;padding:30px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+.hero-layout{flex-direction:column;text-align:center;}
+.product-layout{flex-direction:column;text-align:center;}
+.navbar{flex-direction:row;justify-content:space-between;}
+.menu-icon{display:block;}
+nav{display:none;flex-direction:column;position:absolute;top:70px;left:0;width:100%;background:#0f172a;text-align:center;}
+nav a{margin:15px 0;}
+.product-gallery{grid-template-columns:1fr;}
+.product-gallery img{transform:none;z-index:auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container navbar">
+<div class="logo">TechProduct</div>
+<input type="checkbox" id="menu-toggle">
+<label for="menu-toggle" class="menu-icon">☰</label>
+<nav>
+<a href="#home">Home</a>
+<a href="#features">Features</a>
+<a href="#product">Product</a>
+<a href="#pricing">Pricing</a>
+<a href="#faq">FAQ</a>
+</nav>
+</div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home">
+<div class="container hero-layout">
+<div class="hero-text">
+<h1>Smart Wireless Headphones</h1>
+<p>Experience powerful sound, premium comfort and modern wireless technology.</p>
+<a href="#pricing" class="btn">Buy Now</a>
+</div>
+<div class="hero-img">
+<img src="Product.jpeg" alt="Headphones">
+</div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+<div class="container">
+<h2>Product Features</h2>
+<div class="feature-grid">
+<div class="feature"><div class="feature-icon">🎧</div><h3>Premium Audio</h3><p>Crystal clear immersive sound.</p></div>
+<div class="feature"><div class="feature-icon">🔋</div><h3>30 Hour Battery</h3><p>Enjoy long listening sessions.</p></div>
+<div class="feature"><div class="feature-icon">🛋️</div><h3>Comfort Fit</h3><p>Soft cushions for long use.</p></div>
+<div class="feature"><div class="feature-icon">📶</div><h3>Bluetooth 5.3</h3><p>Stable wireless connection.</p></div>
+</div>
+</div>
+</section>
+
+<!-- PRODUCT -->
+<section id="product">
+<div class="container product-layout">
+<div class="product-gallery">
+<img src="Zero_aluminum_headphone_stand_hero.jpg" alt="Headphones">
+<img src="Headphone.jpeg" alt="Headphones">
+<img src="Product.png" alt="Headphones">
+<img src="JrKD3Z6vB20GJe9UFlkJ4Eh0rwa6UJRn6gIKA9AK.webp" alt="Headphones">
+</div>
+<div class="product-text">
+<h2>Premium Sound Experience</h2>
+<p>Modern design combined with cutting-edge audio technology for immersive listening.</p>
+<a class="btn">Order Now</a>
+</div>
+</div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+<div class="container">
+<h2>Customer Reviews</h2>
+<div class="review-grid">
+<div class="review"><p>"Amazing sound quality!"</p><b>Alex</b></div>
+<div class="review"><p>"Battery lasts all day."</p><b>Maria</b></div>
+<div class="review"><p>"Very comfortable headphones."</p><b>David</b></div>
+</div>
+</div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+<div class="container">
+<h2>Pricing</h2>
+<div class="price-grid">
+<div class="price-card"><h3>Basic</h3><div class="price">$99</div><p>Standard wireless headphones</p><a class="btn">Buy</a></div>
+<div class="price-card"><h3>Premium</h3><div class="price">$149</div><p>Noise canceling version</p><a class="btn">Buy</a></div>
+<div class="price-card"><h3>Pro</h3><div class="price">$199</div><p>All accessories included</p><a class="btn">Buy</a></div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+<div class="container faq-box">
+<h2 style="text-align:center;margin-bottom:30px;">FAQ</h2>
+<details><summary>How long does the battery last?</summary><p>Up to 30 hours of playback.</p></details>
+<details><summary>Does it support Bluetooth?</summary><p>Yes Bluetooth 5.3 technology.</p></details>
+<details><summary>Is it comfortable?</summary><p>Yes soft cushions for long listening.</p></details>
+</div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+<div class="container">
+<h2>Upgrade Your Listening Experience</h2>
+<a class="btn">Buy Now</a>
+</div>
+</section>
+
+<footer>
+<p>© 2026 TechProduct. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
