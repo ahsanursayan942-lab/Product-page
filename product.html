@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>TITAN M1 | Purchase Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 1. DESIGN SYSTEM & STATE ENGINE */
+        :root {
+            --gold: #d4af37;
+            --silver: #e2e2e7;
+            --blue: #007aff;
+            --accent: var(--gold);
+            --bg: #050505;
+            --card: #111111;
+            --text: #ffffff;
+            --text-dim: #888;
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* DYNAMIC THEMING (No JS) */
+        :root:has(#t-gold:checked) { --accent: var(--gold); }
+        :root:has(#t-silver:checked) { --accent: var(--silver); }
+        :root:has(#t-blue:checked) { --accent: var(--blue); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        input[type="radio"], input[type="checkbox"] { display: none; }
+
+        /* 2. LAYOUT ARCHITECTURE */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100dvh;
+        }
+
+        @media (min-width: 1024px) {
+            .page-wrapper { flex-direction: row; height: 100vh; overflow: hidden; }
+        }
+
+        /* 3. ADVANCED 7-IMAGE GALLERY (LEFT) */
+        .gallery-viewport {
+            flex: 1.2;
+            position: relative;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .scroll-engine {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .scroll-engine::-webkit-scrollbar { display: none; }
+
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            scroll-snap-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .slide img {
+            max-width: 100%;
+            max-height: 80%;
+            object-fit: contain;
+            filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
+            transition: var(--transition);
+        }
+
+        /* DOTS NAVIGATION */
+        .gallery-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Active Dot Logic */
+        #p1:checked ~ * [for="p1"], #p2:checked ~ * [for="p2"], #p3:checked ~ * [for="p3"],
+        #p4:checked ~ * [for="p4"], #p5:checked ~ * [for="p5"], #p6:checked ~ * [for="p6"],
+        #p7:checked ~ * [for="p7"] {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* 4. PURCHASE PANEL (RIGHT) */
+        .purchase-panel {
+            flex: 0.8;
+            background: var(--bg);
+            padding: 40px 6%;
+            overflow-y: auto;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* PSYCHOLOGICAL BADGE */
+        .stock-tag {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono';
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stock-tag::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .header-meta { font-family: 'JetBrains Mono', monospace; color: var(--text-dim); font-size: 0.7rem; letter-spacing: 3px; }
+        h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 0.95; letter-spacing: -2px; }
+        
+        .buy-card {
+            background: var(--card);
+            border-radius: 28px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.03);
+            margin-top: 10px;
+        }
+
+        .price-main { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+        .price-main span { font-size: 1.2rem; vertical-align: top; margin-right: 4px; color: var(--accent); }
+
+        /* COLOR CONFIGURATOR */
+        .label { font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; display: block; letter-spacing: 1px; }
+        
+        .swatch-group { display: flex; gap: 12px; margin-bottom: 30px; }
+        .swatch {
+            width: 48px; height: 48px; border-radius: 50%;
+            cursor: pointer; border: 2px solid transparent; padding: 3px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .swatch div { width: 100%; height: 100%; border-radius: 50%; }
+        
+        #t-gold:checked ~ .page-wrapper [for="t-gold"],
+        #t-silver:checked ~ .page-wrapper [for="t-silver"],
+        #t-blue:checked ~ .page-wrapper [for="t-blue"] {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 24px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 18px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            display: block;
+            transition: 0.3s;
+            box-shadow: 0 15px 30px var(--primary-glow);
+        }
+        .checkout-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        /* BENTO SPECS */
+        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .spec-item { background: rgba(255,255,255,0.03); padding: 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.02); }
+        .spec-item label { font-family: 'JetBrains Mono'; font-size: 0.6rem; color: var(--text-dim); display: block; }
+        .spec-item p { font-size: 1rem; font-weight: 600; margin-top: 4px; }
+
+        /* ACCORDION */
+        .accordion { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+        .acc-trigger { display: flex; justify-content: space-between; cursor: pointer; font-weight: 600; font-size: 0.9rem; padding: 10px 0; }
+        .acc-content { max-height: 0; overflow: hidden; transition: 0.5s; color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; }
+        #toggle-acc:checked ~ .acc-content { max-height: 200px; padding-top: 10px; }
+
+        /* MOBILE STICKY BAR */
+        .mobile-buy-bar {
+            position: fixed; bottom: 0; width: 100%;
+            background: rgba(5,5,5,0.85); backdrop-filter: blur(20px);
+            padding: 18px 25px; border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+        }
+        .mobile-price { font-weight: 800; font-size: 1.3rem; }
+        .mobile-btn { padding: 12px 28px; background: var(--accent); border-radius: 12px; font-weight: 800; text-decoration: none; color: #000; font-size: 0.8rem; transition: 0.3s; }
+
+        @media (min-width: 1024px) {
+            .mobile-buy-bar { display: none; }
+            .purchase-panel { padding-bottom: 40px; }
+        }
+
+        @media (max-width: 1023px) {
+            .purchase-panel { padding-bottom: 120px; }
+            .gallery-viewport { aspect-ratio: 1/1.1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DATA STATE STORE -->
+    <input type="radio" name="theme" id="t-gold" checked>
+    <input type="radio" name="theme" id="t-silver">
+    <input type="radio" name="theme" id="t-blue">
+
+    <input type="radio" name="gal" id="p1" checked>
+    <input type="radio" name="gal" id="p2">
+    <input type="radio" name="gal" id="p3">
+    <input type="radio" name="gal" id="p4">
+    <input type="radio" name="gal" id="p5">
+    <input type="radio" name="gal" id="p6">
+    <input type="radio" name="gal" id="p7">
+
+    <div class="page-wrapper">
+        
+        <!-- LEFT: 7-IMAGE SWIPEABLE GALLERY -->
+        <section class="gallery-viewport">
+            <div class="scroll-engine">
+                <div class="slide" id="s1"><img src="https://images.pexels.com/photos/3394651/pexels-photo-3394651.jpeg?auto=compress&cs=tinysrgb&w=1260"></div>
+                <div class="slide" id="s2"><img src="https://images.pexels.com/photos/3587478/pexels-photo-3587478.jpeg?auto=compress&cs=tinysrgb&w=1260"></div>
+                <div class="slide" id="s3"><img src="https://images.pexels.com/photos/3945667/pexels-photo-3945667.jpeg?auto=compress&cs=tinysrgb&w=1260"></div>
+                <div class="slide" id="s4"><img src="Sonic2.jpg"></div>
+                <div class="slide" id="s5"><img src="Sonic3.png"></div>
+                <div class="slide" id="s6"><img src="https://images.pexels.com/photos/815494/pexels-photo-815494.jpeg?auto=compress&cs=tinysrgb&w=1260"></div>
+                <div class="slide" id="s7"><img src="Sonic.jpg"></div>
+            </div>
+
+            <div class="gallery-nav">
+                <label for="p1" class="dot" onclick="document.getElementById('s1').scrollIntoView()"></label>
+                <label for="p2" class="dot" onclick="document.getElementById('s2').scrollIntoView()"></label>
+                <label for="p3" class="dot" onclick="document.getElementById('s3').scrollIntoView()"></label>
+                <label for="p4" class="dot" onclick="document.getElementById('s4').scrollIntoView()"></label>
+                <label for="p5" class="dot" onclick="document.getElementById('s5').scrollIntoView()"></label>
+                <label for="p6" class="dot" onclick="document.getElementById('s6').scrollIntoView()"></label>
+                <label for="p7" class="dot" onclick="document.getElementById('s7').scrollIntoView()"></label>
+            </div>
+        </section>
+
+        <!-- RIGHT: CONVERSION PANEL -->
+        <section class="purchase-panel">
+            <div class="stock-tag">LIMITED RELEASE: 12 UNITS LEFT</div>
+            <div class="header-meta">REFERENCE_SERIES // M1_APEX</div>
+            <h1>Titan M1 Architect</h1>
+            <p style="color: #666; font-size: 1rem;">The world's first CNC-machined Grade 5 Titanium audio array. Engineered with Neural-Fidelity transducers.</p>
+
+            <div class="buy-card">
+                <div class="price-main"><span>$</span>2,499.00</div>
+                
+                <label class="label" style="margin-top:20px;">Choose Aesthetic Finish</label>
+                <div class="swatch-group">
+                    <label for="t-gold" class="swatch swatch-gold"><div style="background: #d4af37;"></div></label>
+                    <label for="t-silver" class="swatch swatch-silver"><div style="background: #e2e2e7;"></div></label>
+                    <label for="t-blue" class="swatch swatch-blue"><div style="background: #007aff;"></div></label>
+                </div>
+
+                <a href="#" class="checkout-btn">Initialize Purchase</a>
+            </div>
+
+            <div class="specs-grid">
+                <div class="spec-item"><label>AUDIO ENGINE</label><p>Graphene 50mm</p></div>
+                <div class="spec-item"><label>LATENCY</label><p>0.002ms Ultra</p></div>
+                <div class="spec-item"><label>MATERIAL</label><p>Grade 5 Titan</p></div>
+                <div class="spec-item"><label>UPTIME</label><p>120H Pulse</p></div>
+            </div>
+
+            <div class="accordion">
+                <input type="checkbox" id="toggle-acc">
+                <label for="toggle-acc" class="acc-trigger">Architectural Details <span>+</span></label>
+                <div class="acc-content">
+                    Every M1 is hand-assembled in Switzerland and individually calibrated. The package includes an artisan leather case, a pure silver balanced cable, and a 5-year global "Titan" warranty.
+                </div>
+            </div>
+        </section>
+
+        <!-- MOBILE STICKY CONVERSION BAR -->
+        <div class="mobile-buy-bar">
+            <div>
+                <div class="mobile-price">$2,499</div>
+                <div style="font-size:0.6rem; color:var(--text-dim); letter-spacing:1px; font-weight:700;">TITAN M1</div>
+            </div>
+            <a href="#" class="mobile-btn">ACQUIRE NOW</a>
+        </div>
+    </div>
+
+</body>
+</html>
